@@ -1,0 +1,576 @@
+# Ввод имени игрока
+#name = input('Your name: ')
+import pygame
+from pygame.draw import *
+import random
+import sys
+pygame.init()
+# Переменные для изображения счета
+font = pygame.font.Font(None, 60)
+FPS = 30
+width = 800
+length = 800
+# Создание экрана
+pygame.display.set_caption('Pac-Man')
+screen = pygame.display.set_mode((width, length))
+# Кортежb цветjd, который будет использован в игре
+YELLOW = (230, 230, 0)
+BLUE = (0, 0, 204)
+# Загрузка и расположение фоновой картинки
+back_position = [0, 0]
+back_image = pygame.image.load('Фон.jpg').convert()
+# Загрузка фоновой музыки
+pygame.mixer.music.load('Музыка.mp3')
+pygame.mixer.music.play(loops=-1)
+pygame.mixer.music.set_volume(0.01)
+
+#каждая позиция - массив со списоком соседних точек
+A0=[0]
+A1=[96]
+A2=[96]
+A3=[106]
+A4=[5, 58]
+A5=[4, 95]
+A6=[7, 95]
+A7=[6, 8]
+A8=[7, 9]
+A9=[8, 10]
+A10=[9, 11]
+A11=[10, 89]
+A12=[87, 89]
+A13=[89, 90, 85]
+A14=[90, 91]
+A15=[16, 90]
+A16=[15, 17]
+A17=[16, 18]
+A18=[17, 19]
+A19=[18, 20]
+A20=[19, 86]
+A21=[22, 86]
+A22=[21, 23]
+A23=[22, 24]
+A24=[23, 25]
+A25=[24, 26]
+A26=[25, 94]
+A27=[28, 94]
+A28=[27, 92]
+A29=[30, 94]
+A30=[29, 100]
+A31=[99, 100]
+A32=[33, 100]
+A33=[32, 34]
+A34=[33, 35]
+A35=[34, 36]
+A36=[35, 37]
+A37=[36, 102]
+A38=[102, 103]
+A39=[40, 102]
+A40=[39, 105]
+A41=[42, 105]
+A42=[41, 104]
+A43=[101, 104]
+A44=[45, 104]
+A45=[44, 46]
+A46=[45, 47]
+A47=[46, 48]
+A48=[47, 49]
+A49=[48, 97]
+A50=[97, 98]
+A51=[52, 97]
+A52=[51, 93]
+A53=[54, 93]
+A54=[53, 88]
+A55=[56, 93]
+A56=[55, 57]
+A57=[56, 58]
+A58=[4, 57]
+A59=[95, 60]
+A60=[59, 61]
+A61=[60, 62]
+A62=[61, 87]
+A63=[64, 86]
+A64=[63, 65]
+A65=[64, 66]
+A66=[65, 91]
+A67=[68, 88]
+A68=[67, 69]
+A69=[68, 98]
+A70=[71, 98]
+A71=[70, 101]
+A72=[73, 101]
+A73=[72, 74]
+A74=[73, 106]
+A75=[76, 106]
+A76=[75, 105]
+A77=[78, 106]
+A78=[77, 79]
+A79=[78, 103]
+A80=[81, 103]
+A81=[80, 99]
+A82=[83, 99]
+A83=[82, 84]
+A84=[83, 92]
+A85=[13, 96]
+A86=[20, 21, 63]
+A87=[12, 62, 88]
+A88=[54, 67, 87]
+A89=[11, 12, 13]
+A90=[13, 14, 15]
+A91=[14, 66, 92]
+A92=[28, 84, 91]
+A93=[52, 55, 53]
+A94=[27, 26, 29]
+A95=[5, 6, 59]
+A96=[1, 2, 85]
+A97=[49, 50, 51]
+A98=[50, 70, 69]
+A99=[31, 81, 82]
+A100=[31, 30, 32]
+A101=[71, 72, 43]
+A102=[39, 37, 38]
+A103=[38, 79, 80]
+A104=[44, 42, 43]
+A105=[41, 40, 76]
+A106=[3, 74, 75, 77]
+
+#список всех точек и их соседних
+B=[A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20,
+   A21, A22, A23, A24, A25, A26, A27, A28, A29, A30, A31, A32, A33, A34, A35, A36, A37, A38, A39, 
+   A40, A41, A42, A43, A44, A45, A46, A47, A48, A49, A50, A51, A52, A53, A54, A55, A56, A57, A58, 
+   A59, A60, A61, A62, A63, A64, A65, A66, A67, A68, A69, A70, A71, A72, A73, A74, A75, A76, A77, 
+   A78, A79, A80, A81, A82, A83, A84, A85, A86, A87, A88, A89, A90, A91, A92, A93, A94, A95, A96, 
+   A97, A98, A99, A100, A101, A102, A103, A104, A105, A106]
+
+C0=[0, 0]
+C1=[6, 7]
+C2=[8, 7]
+C3=[7, 9]
+C4=[1, 1]
+C5=[2, 1]
+C6=[4, 1]
+C7=[5, 1]
+C8=[5, 2]
+C9=[6, 2]
+C10=[6, 3]
+C11=[6, 4]
+C12=[5, 5]
+C13=[7, 5]
+C14=[9, 5]
+C15=[8, 4]
+C16=[8, 3]
+C17=[8, 2]
+C18=[9, 2]
+C19=[9, 1]
+C20=[10, 1]
+C21=[12, 1]
+C22=[13, 1]
+C23=[13, 2]
+C24=[13, 3]
+C25=[13, 4]
+C26=[13, 5]
+C27=[12, 6]
+C28=[11, 6]
+C29=[13, 7]
+C30=[13, 8]
+C31=[12, 9]
+C32=[13, 10]
+C33=[13, 11]
+C34=[13, 12]
+C35=[13, 13]
+C36=[12, 13]
+C37=[11, 13]
+C38=[10, 12]
+C39=[9, 13]
+C40=[8, 13]
+C41=[6, 13]
+C42=[5, 13]
+C43=[4, 12]
+C44=[3, 13]
+C45=[2, 13]
+C46=[1, 13]
+C47=[1, 12]
+C48=[1, 11]
+C49=[1, 10]
+C50=[2, 9]
+C51=[1, 8]
+C52=[1, 7]
+C53=[2, 6]
+C54=[3, 6]
+C55=[1, 5]
+C56=[1, 4]
+C57=[1, 3]
+C58=[1, 2]
+C59=[3, 2]
+C60=[3, 3]
+C61=[3, 4]
+C62=[4, 4]
+C63=[11, 2]
+C64=[11, 3]
+C65=[11, 4]
+C66=[10, 4]
+C67=[4, 7]
+C68=[4, 8]
+C69=[3, 8]
+C70=[3, 10]
+C71=[3, 11]
+C72=[5, 11]
+C73=[5, 10]
+C74=[6, 10]
+C75=[7, 11]
+C76=[7, 12]
+C77=[8, 10]
+C78=[9, 10]
+C79=[9, 11]
+C80=[11, 11]
+C81=[11, 10]
+C82=[11, 8]
+C83=[10, 8]
+C84=[10, 7]
+C85=[7, 6]
+C86=[11, 1]
+C87=[4, 5]
+C88=[4, 6]
+C89=[6, 5]
+C90=[8, 5]
+C91=[10, 5]
+C92=[10, 6]
+C93=[1, 6]
+C94=[13, 6]
+C95=[3, 1]
+C96=[7, 7]
+C97=[1, 9]
+C98=[3, 9]
+C99=[11, 9]
+C100=[13, 9]
+C101=[4, 11]
+C102=[10, 13]
+C103=[10, 11]
+C104=[4, 13]
+C105=[7, 13]
+C106=[7, 10]
+
+#список координат всех точек
+D=(C0, C1, C2, C3, C4, C5, C6, C7, C8, C9, C10, C11, C12, C13, C14, C15, C16, C17, C18, C19, C20, 
+   C21, C22, C23, C24, C25, C26, C27, C28, C29, C30, C31, C32, C33, C34, C35, C36, C37, C38, C39, 
+   C40, C41, C42, C43, C44, C45, C46, C47, C48, C49, C50, C51, C52, C53, C54, C55, C56, C57, C58, 
+   C59, C60, C61, C62, C63, C64, C65, C66, C67, C68, C69, C70, C71, C72, C73, C74, C75, C76, C77, 
+   C78, C79, C80, C81, C82, C83, C84, C85, C86, C87, C88, C89, C90, C91, C92, C93, C94, C95, C96, 
+   C97, C98, C99, C100, C101, C102, C103, C104, C105, C106)
+
+
+
+#Функция, рисующая стены лабиринта по клеткам
+def rec(a, b, c, d):
+    pygame.draw.rect(screen, BLUE, (a*40+100, b*40+100, 40*c, 40*d))
+    
+
+#Функция, рисующая лабиринт
+def lab():
+    rec(0, 0, 1, 15)
+    rec(0, 0, 15, 1)
+    rec(14, 0, 1, 15)
+    rec(0, 14, 15, 1)
+    rec(2, 2, 1, 4)
+    rec(3, 5, 1, 1)
+    rec(4, 2, 1, 2)
+    rec(5, 3, 1, 2)
+    rec(6, 1, 3, 1)
+    rec(7, 2, 1, 3)
+    rec(9, 3, 1, 2)
+    rec(10, 2, 1, 2)
+    rec(11, 5, 1, 1)
+    rec(12, 2, 1, 4)
+    rec(2, 7, 1, 2)
+    rec(3, 7, 1, 1)
+    rec(5, 6, 2, 1)
+    rec(5, 7, 1, 3)
+    rec(4, 9, 1, 2)
+    rec(5, 9, 2, 1)
+    rec(6, 8, 3, 1)
+    rec(8, 9, 3, 1)
+    rec(10, 10, 1, 1)
+    rec(9, 6, 1, 3)
+    rec(8, 6, 1, 1)
+    rec(11, 7, 2, 1)
+    rec(12, 8, 1, 1)
+    rec(2, 10, 1, 3)
+    rec(3, 12, 1, 1)
+    rec(5, 12, 2, 1)
+    rec(6, 11, 1, 1)
+    rec(8, 11, 1, 2)
+    rec(9, 12, 1, 1)
+    rec(11, 12, 1, 1)
+    rec(12, 10, 1, 3)
+
+      
+#Функция, рисующая мишени        
+def circ():
+    for i in range(15):
+        for j in range(15):
+            pygame.draw.circle(screen, YELLOW, 
+                   (40*i+120, 40*j+120), 5)
+    
+
+# Класс, в котором находятся фукции, необходимые для движения объектов
+class Target:
+    def __init__(self, screen, width, length):
+        '''
+        Функция задает начальные координаты объектов и их скорость 
+        self - ссылка на объект 
+        screen - объект pygame.display
+        width - ширина окна игры
+        length - длина окна игры 
+        '''
+        self.x = 385
+        self.y = 385
+        self.screen = screen
+        self.v_x = 0
+        self.v_y = 0
+        self.rect = (self.x, self.y)
+        
+    
+    def move(self):
+        '''
+        Функция задает равномерное движение призраков
+        self - ссылка на объект 
+        '''
+        a = (self.x - 105)/40
+        b = (self.y - 105)/40
+        if (self.x - 105)%40 == 0 and (self.y - 105)%40 == 0:
+            for i in range(107):
+                t = D[i]
+                if t[0] == a and t[1] == b:
+                    c = random.choice(B[i])
+            d = D[c]
+            if d[0] - a < 0:
+                self.v_x = -1
+            if d[1] - b < 0:
+                self.v_y = -1
+            if d[0] - a > 0:
+                self.v_x = 1
+            if d[1] - b > 0:
+                self.v_y = 1
+            if d[0] - a == 0:
+                self.v_x = 0
+            if d[1] - b == 0:
+                self.v_y = 0
+        self.x += self.v_x
+        self.y += self.v_y
+        self.rect = (self.x, self.y)
+        self.rect = (self.x, self.y)
+        
+    def move1(self):
+        '''
+        Функция задает начальные координаты пакмана
+        '''
+        self.x = 385
+        self.y = 465
+        self.rect = (self.x, self.y)
+        
+    def move2(self):
+        '''
+        Функция задает движение пакмана вниз при нажатии кнопки вниз
+        '''
+        e = 0
+        a = (self.x - 105)//40
+        b = (self.y - 105)//40
+        for i in range(107):
+            t = D[i]
+            if t[0] == a and t[1] == b:
+                pik = B[i]
+                j = 0
+                k = 0
+                for pi in pik:
+                    j +=1 
+                while k < j:
+                    c = pik[k]
+                    f = D[c]
+                    if f[1] > b:
+                        e = 1
+                    k += 1
+        self.y = (b+e)*40+105
+        self.rect = (self.x, self.y)
+        
+    def move3(self):
+        '''
+        Функция задает начальные координаты пакмана
+        '''
+        self.v_x = 0
+        self.v_y = 0
+        self.x += self.v_x
+        self.y += self.v_y
+        self.rect = (self.x, self.y)
+        
+    def move4(self):
+        '''
+        Функция задает движение пакмана вниз при нажатии кнопки вниз
+        '''
+        e = 0
+        a = (self.x - 105)//40
+        b = (self.y - 105)//40
+        for i in range(107):
+            t = D[i]
+            if t[0] == a and t[1] == b:
+                pik = B[i]
+                j = 0
+                k = 0
+                for pi in pik:
+                    j +=1 
+                while k < j:
+                    c = pik[k]
+                    f = D[c]
+                    if f[1] < b:
+                        e = -1
+                    k += 1
+        self.y = (b+e)*40+105
+        self.rect = (self.x, self.y)
+        
+    def move5(self):
+        '''
+        Функция задает движение пакмана вниз при нажатии кнопки вниз
+        '''
+        self.v_x = 0
+        a = (self.x - 105)//40
+        b = (self.y - 105)//40
+        for i in range(107):
+            t = D[i]
+            if t[0] == a and t[1] == b:
+                pik = B[i]
+                j = 0
+                k = 0
+                for pi in pik:
+                    j +=1 
+                while k < j:
+                    c = pik[k]
+                    f = D[c]
+                    if f[0] < a:
+                        self.v_x = -1
+                    k += 1
+        self.x += self.v_x
+        self.y += self.v_y
+        self.rect = (self.x, self.y)
+        
+    def move6(self):
+        '''
+        Функция задает движение пакмана вниз при нажатии кнопки вниз
+        '''
+        self.v_x = 0
+        a = (self.x - 105)//40
+        b = (self.y - 105)//40
+        for i in range(107):
+            t = D[i]
+            if t[0] == a and t[1] == b:
+                pik = B[i]
+                j = 0
+                k = 0
+                for pi in pik:
+                    j +=1 
+                while k < j:
+                    c = pik[k]
+                    f = D[c]
+                    if f[0] > a:
+                        self.v_x = 1
+                    k += 1
+        self.x += self.v_x
+        self.y += self.v_y
+        self.rect = (self.x, self.y)
+        
+    
+# Класс объектов             
+class Pictures(Target):
+    def __init__(self, screen, width, length, a):
+        '''
+        Функция загружает изображения, 
+        задает их размеры, начальные координаты и скорость
+        self - ссылка на объект 
+        screen - объект pygame.display
+        width - ширина окна игры
+        length - длина окна игры 
+        '''
+        super().__init__(screen, width, length)
+        if a == 1:
+            self.image = pygame.image.load('Призрак1.png')
+        elif a == 2:
+            self.image = pygame.image.load('Призрак2.png')
+        elif a == 3:
+            self.image = pygame.image.load('Призрак3.png')
+        else:
+            self.image = pygame.image.load('Пакман.png')
+        self.scal = 30
+        self.rect = self.image.get_rect()
+        self.image = pygame.transform.scale(self.image, (self.scal, self.scal))
+        
+        
+    def draw(self):
+        ''''
+        Функция рисует объекты
+        self - ссылка на объект
+        '''
+        screen.blit(self.image, self.rect)
+        
+# Функция, рисующая счет        
+def score(Score):
+    '''
+    Функция пишет в углу счет игрока
+    Score - количество набранных игроком очков 
+    '''
+    text = font.render("Score: " + str(Score), True, YELLOW)
+    screen.blit(text, (10, 10))
+
+
+clock = pygame.time.Clock()
+finished = False
+Score =  0 
+screen.blit(back_image, back_position)
+pictures1 = Pictures(screen, width, length, 1)
+pictures2 = Pictures(screen, width, length, 2)
+pictures3 = Pictures(screen, width, length, 3)
+pictures4 = Pictures(screen, width, length, 4)
+pictures4.move1()
+pictures4.draw() 
+
+
+# Создание изображений 
+while not finished:
+    clock.tick(FPS) 
+    screen.blit(back_image, back_position)
+    circ()
+    pictures1.move()
+    pictures1.draw()  
+    pictures2.move()
+    pictures2.draw()
+    pictures3.move()
+    pictures3.draw()
+    pictures4.move3()
+    pictures4.draw()
+    score(Score) 
+    lab()
+    pygame.display.flip()
+    
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            finished = True  
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_DOWN:
+                pictures4.move2()
+                pictures4.draw()
+            if event.key == pygame.K_UP:
+                pictures4.move4()
+                pictures4.draw()
+            if event.key == pygame.K_LEFT:
+                pictures4.move5()
+                pictures4.draw()
+            if event.key == pygame.K_RIGHT:
+                pictures4.move6()
+                pictures4.draw()
+            
+            
+                    
+'''               
+# Занесение результатов игры в файл                   
+file = open('results.txt', 'a')
+file.write(name +': ' + str(Score) + '\n')
+file.close()
+'''
+    
+pygame.quit()
