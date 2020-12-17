@@ -473,5 +473,5 @@ file = open('results.txt', 'a')
 file.write(name +': ' + str(Score) + '\n')
 file.close()
 '''
-    
+  
 pygame.quit()
